@@ -1,17 +1,17 @@
-const mysql = require('mysql');
-
+// const mysql = require('mysql');
+const { Client, Pool } = require('pg');
 // const config = require('../database/config.js');
 
 const config = {
-  host: 'project-nomad-booking-database.cu7qqwkudqle.us-west-1.rds.amazonaws.com',
+  host: 'localhost',
   database: 'project_nomad_booking',
-  user: 'booking_service',
-  password: 'password',
-  port: 3306,
+  user: 'justinshih',
+  password: '',
+  port: 5432,
 };
 
-const connection = mysql.createConnection(config);
-connection.connect();
+const client = new Client(config);
+client.connect();
 
 module.exports = {
   insertListing: (listing) => {
@@ -20,7 +20,7 @@ module.exports = {
       VALUES (${listing[0]}, ${listing[1]}, ${listing[2]}, ${listing[3]},
       ${listing[4]}, ${listing[5]}, ${listing[6]}, ${listing[7]}, ${listing[8]}, ${listing[9]});`;
 
-    connection.query(insertListingQuery, (err) => {
+    client.query(insertListingQuery, (err) => {
       if (err) {
         console.log(err);
       }
@@ -28,10 +28,10 @@ module.exports = {
   },
 
   insertReservation: (reservation) => {
-    const insertReservationQuery = `INSERT INTO reservations (id, listing_id, start_date, end_date)
-      VALUES (${reservation[0]}, ${reservation[1]}, STR_TO_DATE('${reservation[2]}', '%m/%d/%Y'), STR_TO_DATE('${reservation[3]}', '%m/%d/%Y'));`;
+    const insertReservationQuery = `INSERT INTO reservations (id, listing_id, begin_date, end_date)
+      VALUES (${reservation[0]}, ${reservation[1]}, TO_DATE('${reservation[2]}', 'MM/DD/YYYY'), TO_DATE('${reservation[3]}', 'MM/DD/YYYY'));`;
 
-    connection.query(insertReservationQuery, (err) => {
+    client.query(insertReservationQuery, (err) => {
       if (err) {
         console.log(err);
       }
@@ -39,10 +39,10 @@ module.exports = {
   },
 
   insertPrice: (price) => {
-    const insertPriceQuery = `INSERT INTO listing_daily_prices (id, listing_id, cost_per_night, start_date)
-      VALUES (${price[0]}, ${price[1]}, ${price[2]}, STR_TO_DATE('${price[3]}', '%m/%d/%Y'));`;
+    const insertPriceQuery = `INSERT INTO listing_daily_prices (id, listing_id, cost_per_night, begin_date)
+      VALUES (${price[0]}, ${price[1]}, ${price[2]}, TO_DATE('${price[3]}', 'MM/DD/YYYY'));`;
 
-    connection.query(insertPriceQuery, (err) => {
+    client.query(insertPriceQuery, (err) => {
       if (err) {
         console.log(err);
       }
@@ -50,7 +50,7 @@ module.exports = {
   },
 
   closeConnection: () => {
-    connection.end();
+    client.end();
   },
 
 };
