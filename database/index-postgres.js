@@ -1,5 +1,5 @@
 const { Client } = require('pg');
-const config = require('./config.js');
+const config = require('./config-postgres');
 
 const connection = new Client(config);
 connection.connect();
