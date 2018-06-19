@@ -1,5 +1,5 @@
 // const mysql = require('mysql');
-const { Client, Pool } = require('pg');
+const { Client } = require('pg');
 // const config = require('../database/config.js');
 
 const config = {
