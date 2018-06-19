@@ -1,5 +1,3 @@
-// run: node sample-data/generator.js
-const insertHelpers = require('./insert-helpers');
 
 // helpers
 const getRandomInt = function getRandomIntegerBetweenValues(min, max) {
@@ -8,7 +6,7 @@ const getRandomInt = function getRandomIntegerBetweenValues(min, max) {
 
 const getRandomDecimal = function getRandomDecimalBetweenValues(min, max, decimalPlace) {
   const rand = (Math.random() * (max - min)) + min;
-  const power = Math.pow(10, decimalPlace);
+  const power = 10 ** decimalPlace;
   return Math.floor(rand * power) / power;
 };
 
@@ -50,7 +48,7 @@ const startDate = new Date(2018, 5, 15);
 
 let rowNum = 1;
 
-for (let i = 0; i < 100; i += 1) {
+for (let i = 0; i < 10; i += 1) {
   const reservationsForListing = getRandomInt(10, 50);
   const nextReservation = new Date(startDate);
   nextReservation.setDate(startDate.getDate() + getRandomInt(0, 10));
@@ -94,16 +92,9 @@ for (let i = 0; i < 100; i += 1) {
   }
 }
 
-// insert into database
-listings.forEach(listing => insertHelpers.insertListing(listing));
-console.log(`${listings.length} listings loaded!`);
+module.exports = {
+  listings,
+  reservations,
+  dailyPrices,
+};
 
-reservations.forEach(reservation => insertHelpers.insertReservation(reservation));
-console.log(`${reservations.length} reservations loaded!`);
-
-dailyPrices.forEach(price => insertHelpers.insertPrice(price));
-console.log(`${dailyPrices.length} daily prices loaded!`);
-
-console.log('all sample data generated');
-
-setTimeout(insertHelpers.closeConnection, 3000);
