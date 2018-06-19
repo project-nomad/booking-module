@@ -1,10 +1,10 @@
-const mysql = require('mysql');
+const { Client } = require('pg');
 const config = require('./config.js');
 
-const connection = mysql.createConnection(config);
+const connection = new Client(config);
 connection.connect();
 
-module.exports.getCoreData = function getBaseDataForListing(listingId, callback) {
+const getBaseDataForListing = (listingId, callback) => {
   const query = `SELECT l.*, ROUND(AVG(p.cost_per_night), 0) as avg_cost_per_night
     FROM listings l
     JOIN listing_daily_prices p ON l.id = p.listing_id
@@ -20,7 +20,7 @@ module.exports.getCoreData = function getBaseDataForListing(listingId, callback)
   });
 };
 
-module.exports.getReservationData = function getReservationDataForDateRange(listingId, startDate, endDate, callback) {
+const getReservationDataForDateRange = (listingId, startDate, endDate, callback) => {
   const query = `SELECT id, start_date, end_date
     FROM reservations
     WHERE listing_id = ${listingId}
@@ -51,7 +51,7 @@ const getMaxPrice = function getMaxPrice(listingId, callback) {
   });
 };
 
-module.exports.getPricingData = function getPricingDataForDateRange(listingId, startDate, endDate, callback) {
+const getPricingDataForDateRange = (listingId, startDate, endDate, callback) => {
   const query = `SELECT id, start_date, cost_per_night
     FROM listing_daily_prices
     WHERE listing_id = ${listingId}
@@ -66,4 +66,10 @@ module.exports.getPricingData = function getPricingDataForDateRange(listingId, s
       getMaxPrice(listingId, callback);
     }
   });
+};
+
+module.exports = {
+  getPricingDataForDateRange,
+  getReservationDataForDateRange,
+  getBaseDataForListing,
 };
