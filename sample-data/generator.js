@@ -2,6 +2,7 @@ const now = require('performance-now');
 // helpers
 const numberOfData = 100000;
 const t0 = now();
+let t2;
 
 const getRandomInt = function getRandomIntegerBetweenValues(min, max) {
   return Math.floor(Math.random() * ((max - min) + 1)) + min;
@@ -94,6 +95,9 @@ for (let i = 0; i < (numberOfData / 100); i += 1) {
     nextDate.setDate(nextDate.getDate() + getRandomInt(10, 50));
   }
 }
+
+t2 = now();
+console.log('generator finished in', (t2 - t1).toFixed(3));
 
 module.exports = {
   listings,
