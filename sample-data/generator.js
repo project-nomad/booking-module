@@ -1,5 +1,8 @@
-
+const now = require('performance-now');
 // helpers
+const numberOfData = 100000;
+const t0 = now();
+
 const getRandomInt = function getRandomIntegerBetweenValues(min, max) {
   return Math.floor(Math.random() * ((max - min) + 1)) + min;
 };
@@ -25,7 +28,7 @@ const getDateString = function getDateStringForSQLInsertion(date) {
 
 // generating listings
 const listings = [];
-for (let i = 0; i < 100; i += 1) {
+for (let i = 0; i < numberOfData; i += 1) {
   const row = [];
 
   row.push(i + 1); // index
@@ -48,7 +51,7 @@ const startDate = new Date(2018, 5, 15);
 
 let rowNum = 1;
 
-for (let i = 0; i < 10; i += 1) {
+for (let i = 0; i < (numberOfData / 100); i += 1) {
   const reservationsForListing = getRandomInt(10, 50);
   const nextReservation = new Date(startDate);
   nextReservation.setDate(startDate.getDate() + getRandomInt(0, 10));
@@ -70,7 +73,7 @@ const dailyPrices = [];
 const priceStartDate = new Date(2018, 5, 1);
 rowNum = 1;
 
-for (let i = 0; i < 100; i += 1) {
+for (let i = 0; i < (numberOfData / 100); i += 1) {
   const priceChangesForListing = getRandomInt(5, 10);
   const nextDate = new Date(priceStartDate);
   let nextPrice = getRandomInt(45, 500);
@@ -96,5 +99,6 @@ module.exports = {
   listings,
   reservations,
   dailyPrices,
+  t0,
+  now,
 };
-

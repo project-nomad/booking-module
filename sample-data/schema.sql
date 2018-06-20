@@ -4,7 +4,7 @@ DROP DATABASE IF EXISTS project_nomad_booking;
 CREATE DATABASE project_nomad_booking;
 
 -- should \c project_nomad_booking
--- USE project_nomad_booking;
+\c project_nomad_booking;
 
 CREATE TABLE listings (
   id int PRIMARY KEY,
