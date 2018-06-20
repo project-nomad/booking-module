@@ -42,4 +42,17 @@ app.get('listings/:listingId/booking/pricing/', (req, res) => {
   });
 });
 
+// add reservation
+app.post('/reservations/:reservationId/', (req, res) => {
+
+});
+// update reservation
+app.put('/reservations/:reservationId/', (req, res) => {
+
+});
+// delete reservation
+app.delete('reservations/:reservationId', (req, res) => {
+
+});
+
 module.exports = app;
