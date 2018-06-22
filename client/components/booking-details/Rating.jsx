@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Star from './Star.jsx';
+import Star from './Star';
 
 const ReviewCount = styled.span`
   margin: 5px;
