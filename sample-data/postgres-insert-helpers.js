@@ -1,5 +1,4 @@
 const fs = require('fs');
-const now = require('performance-now');
 
 const {
   generateListing,
@@ -10,7 +9,7 @@ const {
 // adds listings to csv
 
 fs.writeFileSync('./listings.csv', '');
-const t0 = now();
+
 for (let i = 0; i < 100; i += 1) {
   let listings = [];
   for (let j = 0; j < 100000; j += 1) {
