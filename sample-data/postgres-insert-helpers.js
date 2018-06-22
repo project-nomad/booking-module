@@ -1,12 +1,5 @@
-const { Client } = require('pg');
 const fs = require('fs');
-const csv = require('fast-csv');
 const now = require('performance-now');
-
-// const csvStream = csv.createWriteStream({ headers: false });
-// const listingStream = fs.createWriteStream('./listings.csv', { flags: 'a' });
-// const reservationStream = fs.createWriteStream('./reservations.csv');
-// const dailyPricesStream = fs.createWriteStream('./dailyPrices.csv');
 
 const {
   generateListing,
@@ -14,7 +7,6 @@ const {
   generateDailyPrices,
 } = require('./generator');
 
-const numOfRecords = 10000000;
 // adds listings to csv
 
 fs.writeFileSync('./listings.csv', '');
@@ -28,15 +20,12 @@ for (let i = 0; i < 100; i += 1) {
   listings = listings.join('\n');
   listings += '\n';
   fs.appendFileSync('./listings.csv', listings);
-  if (i === 99) {
-    console.log(((now() - t0) / 1000), 'seconds');
-  }
 }
 
-//add reservations to csv
+// add reservations to csv
 fs.writeFileSync('./reservations.csv', '');
 
-// let reservations = [];
+let reservations = [];
 for (let i = 0; i < 10000000; i += 1) {
   let reservation = generateReservation(i);
   reservation = reservation.join('\n');
