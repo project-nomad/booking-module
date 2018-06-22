@@ -1,4 +1,3 @@
-const now = require('performance-now');
 // helpers
 
 const getRandomInt = function getRandomIntegerBetweenValues(min, max) {
