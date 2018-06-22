@@ -24,8 +24,7 @@ const getDateString = function getDateStringForSQLInsertion(date) {
 
 
 // generating listings
-// const listings = [];
-// for (let i = 0; i < numberOfData; i += 1) {
+
 const generateListing = () => [
   getRandomDecimal(2, 5, 1),
   getRandomInt(10, 500),
