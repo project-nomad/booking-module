@@ -73,15 +73,16 @@ class App extends React.Component {
   getCoreData() {
     axios.get(`/listings/${this.props.listingId}/booking/core`)
       .then((response) => {
-        const listing = response.data[0];
+        console.log(response);
+        const listing = response.data.rows[0];
         this.setState({
-          costPerNight: listing.avg_cost_per_night,
+          costPerNight: JSON.parse(listing.avg_cost_per_night),
           totalReviews: listing.review_count,
           rating: listing.avg_rating,
-          cleaningFee: listing.cleaning_fee,
-          serviceFeePerc: listing.service_fee_perc,
-          occTaxRatePerc: listing.occ_tax_rate_perc,
-          additionalGuestFee: listing.additional_guest_fee,
+          cleaningFee: JSON.parse(listing.cleaning_fee),
+          serviceFeePerc: JSON.parse(listing.service_fee_perc),
+          occTaxRatePerc: JSON.parse(listing.occ_tax_rate_perc),
+          additionalGuestFee: JSON.parse(listing.additional_guest_fee),
           guestsAllowed: {
             maxAdults: listing.max_adults,
             maxChildren: listing.max_children,
