@@ -64,7 +64,7 @@ const generateDailyPrices = (i) => {
   let nextPrice = getRandomInt(45, 500);
   const prices = [];
   for (let j = 0; j < getRandomInt(3, 8); j += 1) {
-    const row = [i + 1, nextPrice, getDateString(nextDate)];
+    const row = [i, nextPrice, getDateString(nextDate)];
     // listing_id, cost_per_night, start_date
 
     prices.push(row);
