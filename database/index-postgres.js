@@ -4,6 +4,7 @@ const config = require('./config-postgres');
 const connection = new Client(config);
 connection.connect();
 
+// SELECT l.*, ROUND(AVG(p.cost_per_night), 0) as avg_cost_per_night FROM listings l JOIN listing_daily_prices p ON l.id=p.listing_id WHERE l.id=9999999 GROUP BY 1,2,3,4,5,6,7;
 const getBaseDataForListing = (listingId, callback) => {
   const query = `SELECT l.*, ROUND(AVG(p.cost_per_night), 0) as avg_cost_per_night
     FROM listings l
@@ -20,12 +21,13 @@ const getBaseDataForListing = (listingId, callback) => {
   });
 };
 
-const getReservationDataForDateRange = (listingId, startDate, endDate, callback) => {
-  const query = `SELECT id, start_date, end_date
+// SELECT id, begin_date, end_date FROM reservations WHERE listing_id=10000000 AND (begin_date BETWEEN '2018-07-01' AND '2018-09-28' OR end_date BETWEEN '2018-07-01' AND '2018-09-28');
+const getReservationDataForDateRange = (listingId, beginDate, endDate, callback) => {
+  const query = `SELECT id, begin_date, end_date
     FROM reservations
     WHERE listing_id = ${listingId}
-    AND (start_date BETWEEN '${startDate}' AND '${endDate}'
-    OR end_date BETWEEN '${startDate}' AND '${endDate}');`;
+    AND (begin_date BETWEEN '${beginDate}' AND '${endDate}'
+    OR end_date BETWEEN '${beginDate}' AND '${endDate}');`;
 
   connection.query(query, (err, results) => {
     if (err) {
@@ -37,10 +39,10 @@ const getReservationDataForDateRange = (listingId, startDate, endDate, callback)
 };
 
 const getMaxPrice = function getMaxPrice(listingId, callback) {
-  const maxQuery = `SELECT id, start_date, cost_per_night
+  const maxQuery = `SELECT id, begin_date, cost_per_night
     FROM listing_daily_prices
     WHERE listing_id = ${listingId}
-    ORDER BY start_date DESC LIMIT 1;`;
+    ORDER BY begin_date DESC LIMIT 1;`;
 
   connection.query(maxQuery, (err, results) => {
     if (err) {
@@ -51,11 +53,12 @@ const getMaxPrice = function getMaxPrice(listingId, callback) {
   });
 };
 
-const getPricingDataForDateRange = (listingId, startDate, endDate, callback) => {
-  const query = `SELECT id, start_date, cost_per_night
+// SELECT id, begin_date, cost_per_night FROM listing_daily_prices WHERE listing_id = 9999800 AND begin_date < '2018-09-28';
+const getPricingDataForDateRange = (listingId, beginDate, endDate, callback) => {
+  const query = `SELECT id, begin_date, cost_per_night
     FROM listing_daily_prices
     WHERE listing_id = ${listingId}
-    AND start_date < '${endDate}';`;
+    AND begin_date < '${endDate}';`;
 
   connection.query(query, (err, results) => {
     if (err) {
@@ -68,8 +71,40 @@ const getPricingDataForDateRange = (listingId, startDate, endDate, callback) => 
   });
 };
 
+const addReservation = (listingId, beginDate, endDate, callback) => {
+  const query = `INSERT INTO reservations(listing_id,begin_date,end_date)
+    VALUES(${listingId},${beginDate},${endDate})`;
+
+  connection.query(query, (err, results) => {
+    if (err) callback(err, null);
+    else callback(null, results);
+  });
+};
+
+const updateReservation = (reservationId, beginDate, endDate, callback) => {
+  const query = `UPDATE reservations SET begin_date=${beginDate},
+  end_date=${endDate} WHERE id=${reservationId}`;
+
+  connection.query(query, (err, results) => {
+    if (err) callback(err, null);
+    else callback(null, results);
+  });
+};
+
+const deleteReservation = (reservationId, callback) => {
+  const query = `DELETE FROM reservations WHERE id=${reservationId}`;
+
+  connection.query(query, (err, results) => {
+    if (err) callback(err, null);
+    else callback(null, results);
+  });
+};
+
 module.exports = {
   getPricingDataForDateRange,
   getReservationDataForDateRange,
   getBaseDataForListing,
+  addReservation,
+  updateReservation,
+  deleteReservation,
 };
