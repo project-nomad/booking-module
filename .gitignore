@@ -24,6 +24,5 @@ coverage
 build/
 dist/
 public/bundle-booking.js
-dailyPrices.csv
-listings.csv
-reservations.csv
+
+*.csv
