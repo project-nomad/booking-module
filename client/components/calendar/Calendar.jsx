@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import styled from 'styled-components';
-import CalendarHeader from './CalendarHeader.jsx';
-import CalendarTable from './CalendarTable.jsx';
+import CalendarHeader from './CalendarHeader';
+import CalendarTable from './CalendarTable';
 
 const OuterDiv = styled.div`
   display: inline;
@@ -54,11 +54,12 @@ class Calendar extends React.Component {
   }
 
   getReservedDates() {
-    const url = `/listings/${this.props.listingId}/booking/availability/?start_date=${this.state.year}-${this.state.month + 1}-01&end_date=${this.state.year}-${this.state.month + 2}-01`;
+    const url = `/listings/${this.props.listingId}/booking/availability/?begin_date=${this.state.year}-${this.state.month + 1}-01&end_date=${this.state.year}-${this.state.month + 2}-01`;
     axios.get(url)
       .then((response) => {
+        console.log(response.data);
         this.setState({
-          reservedDates: response.data,
+          reservedDates: response.data.rows,
         }, () => this.calculateCalendarMatrix());
       })
       .catch(error => console.log(error)); // TO DO: what is correct error handling?
@@ -66,10 +67,11 @@ class Calendar extends React.Component {
 
   calculateCalendarMatrix() {
     const dateMatrix = [[]];
+    const { startOfMonth } = this.state;
 
     const currentDate = new Date();
-    const firstDay = new Date(this.state.startOfMonth.getFullYear(), this.state.startOfMonth.getMonth(), 1);
-    const lastDay = new Date(this.state.startOfMonth.getFullYear(), this.state.startOfMonth.getMonth() + 1, 0);
+    const firstDay = new Date(startOfMonth.getFullYear(), startOfMonth.getMonth(), 1);
+    const lastDay = new Date(startOfMonth.getFullYear(), startOfMonth.getMonth() + 1, 0);
 
     const dayOfWeekOfFirstDay = firstDay.getDay();
     const lastDate = lastDay.getDate();
@@ -83,7 +85,7 @@ class Calendar extends React.Component {
     for (let i = 1; i <= lastDate; i += 1) {
       // get availability
       this.state.reservedDates.forEach((reservation) => {
-        const start = new Date(reservation.start_date);
+        const start = new Date(reservation.begin_date);
         const end = new Date(reservation.end_date);
 
         if (currentDate.getMonth() === this.state.month && currentDate.getDate() >= i) {
@@ -175,6 +177,7 @@ class Calendar extends React.Component {
 
 
   render() {
+    console.log(this.state.dates);
     return (
       <OuterDiv>
         <MainDiv>
