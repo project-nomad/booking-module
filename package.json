@@ -9,15 +9,17 @@
   },
   "scripts": {
     "react-dev": "webpack -d --watch",
-    "start-server": "node server/index.js",
+    "start-server": "nodemon server/index.js",
     "test": "jest --forceExit",
     "build": "webpack",
     "create-mock-data": "node sample-data/generator.js",
+    "insert-postgres": "node sample-data/postgres-insert.js",
     "docker": "npm run create-mock-data && npm run start-server"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
+    "cassandra-driver": "^3.5.0",
     "express": "^4.16.3",
     "mysql": "^2.15.0",
     "npm": "^6.1.0",
@@ -43,6 +45,7 @@
     "nodemon": "^1.17.5",
     "react-test-renderer": "^16.4.0",
     "supertest": "^3.1.0",
+    "uuid": "^3.3.0",
     "webpack": "^4.10.2",
     "webpack-cli": "^2.1.4"
   }
