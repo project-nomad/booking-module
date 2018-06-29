@@ -54,7 +54,7 @@ const getMaxPrice = function getMaxPrice(listingId, callback) {
 };
 
 // SELECT id, begin_date, cost_per_night FROM listing_daily_prices WHERE listing_id = 9999800 AND begin_date < '2018-09-28';
-const getPricingDataForDateRange = (listingId, beginDate, endDate, callback) => {
+const getPricingDataForDateRange = (listingId, endDate, callback) => {
   const query = `SELECT id, begin_date, cost_per_night
     FROM listing_daily_prices
     WHERE listing_id = ${listingId}
