@@ -57,7 +57,6 @@ class Calendar extends React.Component {
     const url = `/listings/${this.props.listingId}/booking/availability/?begin_date=${this.state.year}-${this.state.month + 1}-01&end_date=${this.state.year}-${this.state.month + 2}-01`;
     axios.get(url)
       .then((response) => {
-        console.log(response.data);
         this.setState({
           reservedDates: response.data.rows,
         }, () => this.calculateCalendarMatrix());
@@ -177,7 +176,6 @@ class Calendar extends React.Component {
 
 
   render() {
-    console.log(this.state.dates);
     return (
       <OuterDiv>
         <MainDiv>
