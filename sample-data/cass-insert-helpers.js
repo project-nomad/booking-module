@@ -20,17 +20,18 @@ for (let i = 1; i <= 10000000; i += 1) {
   }
 }
 
-// fs.writeFileSync('./reservations-Cass.csv', '');
+// Adds Reservations to csv
+fs.writeFileSync('./reservations-Cass.csv', '');
 
-// let reservations = [];
-// for (let i = 1; i <= 10000000; i += 1) {
-//   let reservation = generateReservationCass(i);
-//   reservation = reservation.join('\n');
-//   reservations.push(reservation);
-//   if (i % 100000 === 0) {
-//     reservations = reservations.join('\n');
-//     reservations += '\n';
-//     fs.appendFileSync('./reservations-Cass.csv', reservations);
-//     reservations = [];
-//   }
-// }
+let reservations = [];
+for (let i = 1; i <= 10000; i += 1) {
+  let reservation = generateReservationCass(i);
+  reservation = reservation.join('\n');
+  reservations.push(reservation);
+  if (i % 100 === 0) {
+    reservations = reservations.join('\n');
+    reservations += '\n';
+    fs.appendFileSync('./reservations-Cass.csv', reservations);
+    reservations = [];
+  }
+}
