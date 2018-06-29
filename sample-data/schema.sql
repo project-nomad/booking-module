@@ -16,7 +16,7 @@ CREATE TABLE listings (
   cleaning_fee decimal (10, 2) NOT NULL,
   service_fee_perc decimal (3, 2) NOT NULL,
   occ_tax_rate_perc decimal (3, 2) NOT NULL,
-  additional_guest_fee decimal(10, 2) NOT NULL
+  additional_guest_fee decimal (10, 2) NOT NULL
 );
 
 CREATE TABLE reservations (
@@ -40,3 +40,4 @@ COPY listing_daily_prices (listing_id,cost_per_night,begin_date) from '/Users/ju
 
 CREATE INDEX listings_index on listings (id);
 CREATE INDEX listing_P_index on listing_daily_prices (listing_id);
+CREATE INDEX listing_R_index on reservations (listing_id);
