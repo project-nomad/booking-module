@@ -73,7 +73,6 @@ class App extends React.Component {
   getCoreData() {
     axios.get(`/listings/${this.props.listingId}/booking/core`)
       .then((response) => {
-        console.log(response);
         const listing = response.data.rows[0];
         this.setState({
           costPerNight: JSON.parse(listing.avg_cost_per_night),
