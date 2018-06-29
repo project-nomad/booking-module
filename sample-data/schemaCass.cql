@@ -20,5 +20,7 @@ CREATE TABLE IF NOT EXISTS booking.reservations (
   listing_id INT,
   begin_date DATE,
   end_date DATE,
-  PRIMARY KEY(listing_id, id)
+  PRIMARY KEY((listing_id), begin_date, end_date);
 );
+
+COPY reservations (listing_id , begin_date , end_date , id ) FROM '/Users/justinshih/HackReactor/airJordans/booking-module/reservations-Cass.csv';
