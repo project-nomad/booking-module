@@ -1,0 +1,18 @@
+config:
+  target: 'http://localhost:3001'
+  phases:
+    - duration: 60
+      arrivalRate: 20
+scenarios:
+  - name: 'core'
+    flow:
+    # - get:
+    #     url: "/listings/{{$randomNumber(1,10000000)}}/booking/core/"
+    - get:
+        url: "/listings/{{$randomNumber(1,10000000)}}/booking/availability/?start_date=2018-07-01&end_date=2018-09-28"
+    # - post:
+    #     url: "/listings/{{$randomNumber(1,10000000)}}/booking/reservations/?begin_date=2018-09-26&end_date=2018-09-28"
+    # - put:
+    #     url: "/reservations/{{$randomNumber(1,40000000)}}/booking/?begin_date=2018-09-26&end_date=2018-09-28"
+    # - delete:
+    #     url: "/reservations/{{$randomNumber1, 40000000}}/"
