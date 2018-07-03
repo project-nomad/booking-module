@@ -1,8 +1,12 @@
-const { Client } = require('pg');
+const { Pool } = require('pg');
 const config = require('./config-postgres');
 
-const connection = new Client(config);
-connection.connect();
+const pool = new Pool(config);
+
+pool.connect((err) => {
+  if (err) throw err;
+  else console.log('pool connected');
+});
 
 // SELECT l.*, ROUND(AVG(p.cost_per_night), 0) as avg_cost_per_night FROM listings l JOIN listing_daily_prices p ON l.id=p.listing_id WHERE l.id=9999999 GROUP BY 1,2,3,4,5,6,7;
 const getBaseDataForListing = (listingId, callback) => {
@@ -12,7 +16,7 @@ const getBaseDataForListing = (listingId, callback) => {
     WHERE l.id = ${listingId}
     GROUP BY 1,2,3,4,5,6,7`;
 
-  connection.query(query, (err, results) => {
+  pool.query(query, (err, results) => {
     if (err) {
       callback(err, null);
     } else {
@@ -28,8 +32,7 @@ const getReservationDataForDateRange = (listingId, beginDate, endDate, callback)
     WHERE listing_id = ${listingId}
     AND (begin_date BETWEEN '${beginDate}' AND '${endDate}'
     OR end_date BETWEEN '${beginDate}' AND '${endDate}');`;
-
-  connection.query(query, (err, results) => {
+  pool.query(query, (err, results) => {
     if (err) {
       callback(err, null);
     } else {
@@ -44,7 +47,7 @@ const getMaxPrice = function getMaxPrice(listingId, callback) {
     WHERE listing_id = ${listingId}
     ORDER BY begin_date DESC LIMIT 1;`;
 
-  connection.query(maxQuery, (err, results) => {
+  pool.query(maxQuery, (err, results) => {
     if (err) {
       callback(err, null);
     } else {
@@ -60,7 +63,7 @@ const getPricingDataForDateRange = (listingId, endDate, callback) => {
     WHERE listing_id = ${listingId}
     AND begin_date < '${endDate}';`;
 
-  connection.query(query, (err, results) => {
+  pool.query(query, (err, results) => {
     if (err) {
       callback(err, null);
     } else if (results.length > 0) {
@@ -76,7 +79,7 @@ const addReservation = (listingId, beginDate, endDate, callback) => {
   const query = `INSERT INTO reservations(listing_id,begin_date,end_date)
     VALUES(${listingId},'${beginDate}','${endDate}');`;
   
-  connection.query(query, (err, results) => {
+  pool.query(query, (err, results) => {
     if (err) callback(err, null);
     else callback(null, results);
   });
@@ -87,7 +90,7 @@ const updateReservation = (reservationId, beginDate, endDate, callback) => {
   const query = `UPDATE reservations SET begin_date='${beginDate}',
   end_date='${endDate}' WHERE id=${reservationId}`;
 
-  connection.query(query, (err, results) => {
+  pool.query(query, (err, results) => {
     if (err) callback(err, null);
     else callback(null, results);
   });
@@ -97,7 +100,7 @@ const updateReservation = (reservationId, beginDate, endDate, callback) => {
 const deleteReservation = (reservationId, callback) => {
   const query = `DELETE FROM reservations WHERE id=${reservationId}`;
 
-  connection.query(query, (err, results) => {
+  pool.query(query, (err, results) => {
     if (err) callback(err, null);
     else callback(null, results);
   });
