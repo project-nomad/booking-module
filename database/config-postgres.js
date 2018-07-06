@@ -1,5 +1,5 @@
 module.exports = {
-  host: '18.218.23.120',
+  host: '13.59.221.125',
   database: 'project_nomad_booking',
   user: 'postgres',
   password: 'postgres',
