@@ -9,7 +9,7 @@
   },
   "scripts": {
     "react-dev": "webpack -d --watch",
-    "start-server": "nodemon server/index.js",
+    "start-server": "node server/index.js",
     "test": "jest --forceExit",
     "build": "webpack",
     "create-mock-data": "node sample-data/generator.js",
@@ -28,6 +28,7 @@
     "prop-types": "^15.6.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "redis": "^2.8.0",
     "styled-components": "^3.3.0"
   },
   "devDependencies": {
