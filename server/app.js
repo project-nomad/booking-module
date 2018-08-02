@@ -2,6 +2,10 @@ require('newrelic');
 const express = require('express');
 const path = require('path');
 const db = require('../database/index-postgres');
+const redis = require('redis');
+
+const client = redis.createClient(6379, '13.58.17.53');
+client.on('connect', () => console.log('redis connected'));
 
 const app = express();
 
@@ -9,13 +13,21 @@ app.use(express.static(path.join(__dirname, '/../public')));
 app.use('/listings/:listingId', express.static(path.join(__dirname, '/../public')));
 
 // http://localhost:3001/listings/9020323/booking/core/
-app.get('/listings/:listingId/booking/core', (req, res) => {
-  db.getBaseDataForListing(req.params.listingId, (err, results) => {
-    if (err) {
-      res.send(err);
+app.get('/listings/:listingId/booking/core', async (req, res) => {
+  client.get(req.url, (err, data) => {
+    if (err) console.log(err);
+    else if (data) {
+      res.status(200).send(data);
     } else {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.status(200).send(results);
+      db.getBaseDataForListing(req.params.listingId, (err, results) => {
+        if (err) {
+          res.send(err);
+        } else {
+          res.header('Access-Control-Allow-Origin', '*');
+          client.set(req.url, JSON.stringify(results.rows));
+          res.status(200).send(results);
+        }
+      });
     }
   });
 });
