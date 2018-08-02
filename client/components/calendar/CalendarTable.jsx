@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import DateSquare from './DateSquare.jsx'
+import DateSquare from './DateSquare';
 
 const Table = styled.table`
   margin: 0 auto;

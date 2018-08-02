@@ -9,9 +9,7 @@ A recreation of AirBnb's booking module, made with React, Express, MySQL & Style
   - https://github.com/project-nomad/review-module
   - https://github.com/project-nomad/listing-description-module
   - https://github.com/project-nomad/image-carousel-module
-  - https://github.com/project-nomad/proxy-nataliestam
 
-## Development
 ### Installing Dependencies & Getting Started
 
 From within the root directory:

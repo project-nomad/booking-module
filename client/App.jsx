@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import axios from 'axios';
-import PricePerNight from './components/booking-details/PricePerNight.jsx';
-import Rating from './components/booking-details/Rating.jsx';
-import DatesButtons from './components/calendar/DatesButtons.jsx';
-import GuestsButton from './components/guests/GuestsButton.jsx';
-import CostSummary from './components/booking-details/CostSummary.jsx';
-import BookButton from './components/BookButton.jsx';
+import PricePerNight from './components/booking-details/PricePerNight';
+import Rating from './components/booking-details/Rating';
+import DatesButtons from './components/calendar/DatesButtons';
+import GuestsButton from './components/guests/GuestsButton';
+import CostSummary from './components/booking-details/CostSummary';
+import BookButton from './components/BookButton';
 
 const OuterDiv = styled.div`
   width: 376px;
@@ -73,15 +73,15 @@ class App extends React.Component {
   getCoreData() {
     axios.get(`/listings/${this.props.listingId}/booking/core`)
       .then((response) => {
-        const listing = response.data[0];
+        const listing = response.data.rows[0];
         this.setState({
-          costPerNight: listing.avg_cost_per_night,
+          costPerNight: JSON.parse(listing.avg_cost_per_night),
           totalReviews: listing.review_count,
           rating: listing.avg_rating,
-          cleaningFee: listing.cleaning_fee,
-          serviceFeePerc: listing.service_fee_perc,
-          occTaxRatePerc: listing.occ_tax_rate_perc,
-          additionalGuestFee: listing.additional_guest_fee,
+          cleaningFee: JSON.parse(listing.cleaning_fee),
+          serviceFeePerc: JSON.parse(listing.service_fee_perc),
+          occTaxRatePerc: JSON.parse(listing.occ_tax_rate_perc),
+          additionalGuestFee: JSON.parse(listing.additional_guest_fee),
           guestsAllowed: {
             maxAdults: listing.max_adults,
             maxChildren: listing.max_children,
@@ -91,7 +91,6 @@ class App extends React.Component {
       })
       .catch(error => console.log(error)); // TO DO: what is correct error handling?
   }
-
 
   getStarArray() {
     const stars = [];
@@ -147,7 +146,7 @@ class App extends React.Component {
   }
 
   changeSelectedGuests(e, type, incrementor) {
-    const guestsSelected = this.state.guestsSelected;
+    const { guestsSelected } = this.state;
     guestsSelected[type.toLowerCase()] += incrementor;
 
     this.setState({

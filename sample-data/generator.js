@@ -1,14 +1,13 @@
-// run: node sample-data/generator.js
-const insertHelpers = require('./insert-helpers');
-
+const uuid = require('uuid/v1');
 // helpers
+
 const getRandomInt = function getRandomIntegerBetweenValues(min, max) {
   return Math.floor(Math.random() * ((max - min) + 1)) + min;
 };
 
 const getRandomDecimal = function getRandomDecimalBetweenValues(min, max, decimalPlace) {
   const rand = (Math.random() * (max - min)) + min;
-  const power = Math.pow(10, decimalPlace);
+  const power = 10 ** decimalPlace;
   return Math.floor(rand * power) / power;
 };
 
@@ -23,87 +22,105 @@ const getDateString = function getDateStringForSQLInsertion(date) {
 
   return `${month}/${day}/${year}`;
 };
+const getDateStringCass = function getDateStringForSQLInsertion(date) {
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  return `${year}-${month}-${day}`;
+};
 
 
 // generating listings
-const listings = [];
-for (let i = 0; i < 100; i += 1) {
-  const row = [];
 
-  row.push(i + 1); // index
-  row.push(getRandomDecimal(2, 5, 1)); // average_rating
-  row.push(getRandomInt(10, 500)); // review_count
-  row.push(getRandomInt(2, 20)); // max_adults
-  row.push(getRandomInt(2, 6)); // max_children
-  row.push(getRandomInt(2, 6)); // max_infants
-  row.push(getRandomInt(0, 80)); // cleaning_fee
-  row.push(getRandomDecimal(0, 0.4, 2)); // service_fee_perc
-  row.push(getRandomDecimal(0, 0.4, 2)); // occ_tac_rate_perc
-  row.push(getRandomInt(0, 50)); // additional_guest_fee
-
-  listings.push(row);
-}
+const generateListing = () => [
+  getRandomDecimal(2, 5, 1),
+  getRandomInt(10, 500),
+  getRandomInt(2, 20),
+  getRandomInt(2, 6),
+  getRandomInt(2, 6),
+  getRandomInt(0, 40),
+  getRandomDecimal(0, 0.4, 2),
+  getRandomDecimal(0, 0.4, 2),
+  getRandomInt(0, 25),
+];
 
 // generate reservations
-const reservations = [];
-const startDate = new Date(2018, 5, 15);
 
-let rowNum = 1;
-
-for (let i = 0; i < 100; i += 1) {
-  const reservationsForListing = getRandomInt(10, 50);
+const generateReservation = (i) => {
+  const startDate = new Date(2018, 5, 15);
   const nextReservation = new Date(startDate);
   nextReservation.setDate(startDate.getDate() + getRandomInt(0, 10));
-
-  for (let j = 0; j < reservationsForListing; j += 1) {
+  const reservations = [];
+  for (let j = 0; j < getRandomInt(5, 15); j += 1) {
     const endOfReservation = new Date(nextReservation);
     endOfReservation.setDate(nextReservation.getDate() + getRandomInt(1, 10));
 
-    const row = [rowNum, i + 1, getDateString(nextReservation), getDateString(endOfReservation)];
+    const row = [i, getDateString(nextReservation), getDateString(endOfReservation)];
     reservations.push(row);
-
-    rowNum += 1;
+    // write row;
     nextReservation.setDate(endOfReservation.getDate() + getRandomInt(0, 10));
   }
-}
+  return reservations;
+};
+
+const generateReservationCass = (i) => {
+  const startDate = new Date(2018, 5, 15);
+  const nextReservation = new Date(startDate);
+  nextReservation.setDate(startDate.getDate() + getRandomInt(0, 10));
+  const reservations = [];
+  for (let j = 0; j < getRandomInt(5, 15); j += 1) {
+    const endOfReservation = new Date(nextReservation);
+    endOfReservation.setDate(nextReservation.getDate() + getRandomInt(1, 10));
+
+    const row = [i, getDateStringCass(nextReservation), getDateStringCass(endOfReservation), uuid()];
+    reservations.push(row);
+    // write row;
+    nextReservation.setDate(endOfReservation.getDate() + getRandomInt(0, 10));
+  }
+  return reservations;
+};
 
 // generate daily prices
-const dailyPrices = [];
-const priceStartDate = new Date(2018, 5, 1);
-rowNum = 1;
 
-for (let i = 0; i < 100; i += 1) {
-  const priceChangesForListing = getRandomInt(5, 10);
+const generateDailyPrices = (i) => {
+  const priceStartDate = new Date(2018, 5, 1);
   const nextDate = new Date(priceStartDate);
   let nextPrice = getRandomInt(45, 500);
+  const prices = [];
+  for (let j = 0; j < getRandomInt(3, 8); j += 1) {
+    const row = [i, nextPrice, getDateString(nextDate)];
+    // listing_id, cost_per_night, start_date
 
-  for (let j = 0; j < priceChangesForListing; j += 1) {
-    const row = [];
-
-    row.push(rowNum); // index
-    row.push(i + 1); // listing_id
-    row.push(nextPrice); // cost_per_night
-    row.push(getDateString(nextDate)); // start_date
-
-    dailyPrices.push(row);
-    rowNum += 1;
-
+    prices.push(row);
     const potentialNextPrice = nextPrice + (getRandomInt(0, 50) * getRandomPosNeg());
     nextPrice = potentialNextPrice > 45 ? potentialNextPrice : 45;
     nextDate.setDate(nextDate.getDate() + getRandomInt(10, 50));
   }
-}
+  return prices;
+};
 
-// insert into database
-listings.forEach(listing => insertHelpers.insertListing(listing));
-console.log(`${listings.length} listings loaded!`);
+const generateDailyPricesCass = (i) => {
+  const priceStartDate = new Date(2018, 5, 1);
+  const nextDate = new Date(priceStartDate);
+  let nextPrice = getRandomInt(45, 500);
+  const prices = [];
+  for (let j = 0; j < getRandomInt(3, 8); j += 1) {
+    const row = [i, nextPrice, getDateStringCass(nextDate)];
+    // listing_id, cost_per_night, start_date
 
-reservations.forEach(reservation => insertHelpers.insertReservation(reservation));
-console.log(`${reservations.length} reservations loaded!`);
+    prices.push(row);
+    const potentialNextPrice = nextPrice + (getRandomInt(0, 50) * getRandomPosNeg());
+    nextPrice = potentialNextPrice > 45 ? potentialNextPrice : 45;
+    nextDate.setDate(nextDate.getDate() + getRandomInt(10, 50));
+  }
+  return prices;
+};
 
-dailyPrices.forEach(price => insertHelpers.insertPrice(price));
-console.log(`${dailyPrices.length} daily prices loaded!`);
-
-console.log('all sample data generated');
-
-setTimeout(insertHelpers.closeConnection, 3000);
+module.exports = {
+  generateListing,
+  generateReservation,
+  generateDailyPrices,
+  generateReservationCass,
+  generateDailyPricesCass,
+};
